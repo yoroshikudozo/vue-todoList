@@ -36,21 +36,41 @@ describe("TodoList.vue", () => {
   });
 
   describe("computed", () => {
+    const todos = [
+      { id: 1, text: "todo1", done: true },
+      { id: 2, text: "todo2", done: false },
+      { id: 3, text: "todo3", done: false }
+    ];
     it("doneTodos", () => {
-      const wrapper = shallowMount(TodoList);
-      expect(wrapper.vm.doneTodos).toEqual([wrapper.vm.todos[0]]);
+      const doneTodos = TodoList.computed.doneTodos.call({ todos });
+      const result = [todos[0]];
+      expect(doneTodos).toEqual(result);
     });
     it("undoneTodos", () => {
-      const wrapper = shallowMount(TodoList);
-      expect(wrapper.vm.undoneTodos).toEqual([
-        wrapper.vm.todos[1],
-        wrapper.vm.todos[2]
-      ]);
+      const undoneTodos = TodoList.computed.undoneTodos.call({ todos });
+      const result = [todos[1], todos[2]];
+      expect(undoneTodos).toEqual(result);
     });
     it("selectedTodos", () => {
+      expect(TodoList.computed.selectedTodos.call({ todos })).toEqual(todos);
+    });
+    it("selectedTodos updating correctly ('done')", () => {
       const wrapper = shallowMount(TodoList);
+      wrapper.setData({ todos });
       wrapper.setData({ selected: "done" });
-      expect(wrapper.vm.selectedTodos).toEqual(wrapper.vm.doneTodos);
+
+      const result = [todos[0]];
+
+      expect(wrapper.vm.selectedTodos).toEqual(result);
+    });
+    it("selectedTodos updating correctly ('undone')", () => {
+      const wrapper = shallowMount(TodoList);
+      wrapper.setData({ todos });
+      wrapper.setData({ selected: "undone" });
+
+      const result = [todos[1], todos[2]];
+
+      expect(wrapper.vm.selectedTodos).toEqual(result);
     });
   });
 });
