@@ -1,14 +1,18 @@
 import { shallowMount } from "@vue/test-utils";
 import TodoList from "@/components/TodoList.vue";
 
+function factory(options) {
+  return shallowMount(TodoList, options);
+}
+
 describe("TodoList.vue", () => {
   describe("renders", () => {
     it("title", () => {
-      const wrapper = shallowMount(TodoList);
+      const wrapper = factory();
       expect(wrapper.find("h2").text()).toMatch("Todos");
     });
     it("todos", () => {
-      const wrapper = shallowMount(TodoList);
+      const wrapper = factory();
       expect(
         wrapper
           .find(".todoList")
@@ -20,7 +24,7 @@ describe("TodoList.vue", () => {
 
   describe("methods", () => {
     it("addTodo", () => {
-      const wrapper = shallowMount(TodoList);
+      const wrapper = factory();
       wrapper.setData({ inputText: "todo" });
 
       const todo = { id: 4, text: "todo", done: false };
@@ -29,7 +33,7 @@ describe("TodoList.vue", () => {
       expect(wrapper.vm.todos[3]).toEqual(todo);
     });
     it("deleteTodo", () => {
-      const wrapper = shallowMount(TodoList);
+      const wrapper = factory();
       wrapper.vm.deleteTodo();
       expect(wrapper.vm.todos.length).toBe(2);
     });
@@ -55,7 +59,7 @@ describe("TodoList.vue", () => {
       expect(TodoList.computed.selectedTodos.call({ todos })).toEqual(todos);
     });
     it("selectedTodos updating correctly ('done')", () => {
-      const wrapper = shallowMount(TodoList);
+      const wrapper = factory();
       wrapper.setData({ todos });
       wrapper.setData({ selected: "done" });
 
@@ -64,7 +68,7 @@ describe("TodoList.vue", () => {
       expect(wrapper.vm.selectedTodos).toEqual(result);
     });
     it("selectedTodos updating correctly ('undone')", () => {
-      const wrapper = shallowMount(TodoList);
+      const wrapper = factory();
       wrapper.setData({ todos });
       wrapper.setData({ selected: "undone" });
 
