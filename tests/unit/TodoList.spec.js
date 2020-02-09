@@ -34,4 +34,23 @@ describe("TodoList.vue", () => {
       expect(wrapper.vm.todos.length).toBe(2);
     });
   });
+
+  describe("computed", () => {
+    it("doneTodos", () => {
+      const wrapper = shallowMount(TodoList);
+      expect(wrapper.vm.doneTodos).toEqual([wrapper.vm.todos[0]]);
+    });
+    it("undoneTodos", () => {
+      const wrapper = shallowMount(TodoList);
+      expect(wrapper.vm.undoneTodos).toEqual([
+        wrapper.vm.todos[1],
+        wrapper.vm.todos[2]
+      ]);
+    });
+    it("selectedTodos", () => {
+      const wrapper = shallowMount(TodoList);
+      wrapper.setData({ selected: "done" });
+      expect(wrapper.vm.selectedTodos).toEqual(wrapper.vm.doneTodos);
+    });
+  });
 });
