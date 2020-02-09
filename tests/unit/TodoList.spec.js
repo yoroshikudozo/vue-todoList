@@ -20,6 +20,12 @@ describe("TodoList.vue", () => {
           .findAll("li").length
       ).toBe(3);
     });
+    it("todoInput and works correctly", () => {
+      const wrapper = factory();
+      wrapper.find(".todoInput input").setValue("todo");
+      wrapper.find(".todoInput button").trigger("click");
+      expect(wrapper.vm.todos[3]).toEqual({ id: 4, text: "todo", done: false });
+    });
   });
 
   describe("methods", () => {
