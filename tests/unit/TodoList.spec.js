@@ -2,17 +2,36 @@ import { shallowMount } from "@vue/test-utils";
 import TodoList from "@/components/TodoList.vue";
 
 describe("TodoList.vue", () => {
-  it("renders title", () => {
-    const wrapper = shallowMount(TodoList);
-    expect(wrapper.find("h2").text()).toMatch("Todos");
+  describe("renders", () => {
+    it("title", () => {
+      const wrapper = shallowMount(TodoList);
+      expect(wrapper.find("h2").text()).toMatch("Todos");
+    });
+    it("todos", () => {
+      const wrapper = shallowMount(TodoList);
+      expect(
+        wrapper
+          .find(".todoList")
+          .find("ul")
+          .findAll("li").length
+      ).toBe(3);
+    });
   });
-  it("renders todos", () => {
-    const wrapper = shallowMount(TodoList);
-    expect(
-      wrapper
-        .find(".todoList")
-        .find("ul")
-        .findAll("li").length
-    ).toBe(3);
+
+  describe("methods", () => {
+    it("addTodo", () => {
+      const wrapper = shallowMount(TodoList);
+      wrapper.setData({ inputText: "todo" });
+
+      const todo = { id: 4, text: "todo", done: false };
+
+      wrapper.vm.addTodo();
+      expect(wrapper.vm.todos[3]).toEqual(todo);
+    });
+    it("deleteTodo", () => {
+      const wrapper = shallowMount(TodoList);
+      wrapper.vm.deleteTodo();
+      expect(wrapper.vm.todos.length).toBe(2);
+    });
   });
 });
