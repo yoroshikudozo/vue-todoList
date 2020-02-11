@@ -24,7 +24,7 @@
       <p v-if="selected === 'done'">Hmm... You should start some tasks.</p>
     </div>
     <div v-if="doneTodoLength">
-      <button @click="deleteTodo">
+      <button @click="removeTodo">
         Delete done todo{{ doneTodoLength > 1 ? "s" : "" }}.
       </button>
     </div>
@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { createTodo, fetchTodos } from "@/api/todoRequest";
+import { createTodo, deleteTodos, fetchTodos } from "@/api/todoRequest";
 export default {
   name: "TodoList",
   data() {
@@ -102,20 +102,23 @@ export default {
         this.inputText = "";
       });
     },
-    deleteTodo() {
-      this.todos = this.undoneTodos;
+    removeTodo() {
+      const ids = this.doneTodos.map(todo => todo.id);
+      deleteTodos(ids).then(() => {
+        this.todos = this.undoneTodos;
+      });
     },
     visibilityFilter(value) {
       this.selected = value;
     },
-    fetchTodos() {
+    getTodos() {
       fetchTodos().then(res => {
         this.todos = res.data;
       });
     }
   },
   created() {
-    this.fetchTodos();
+    this.getTodos();
   }
 };
 </script>

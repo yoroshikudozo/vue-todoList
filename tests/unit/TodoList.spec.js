@@ -16,7 +16,8 @@ jest.mock("@/api/todoRequest", () => ({
         { id: 3, text: "todo3", done: false }
       ]
     }),
-  createTodo: todo => Promise.resolve({ data: todo })
+  createTodo: todo => Promise.resolve({ data: todo }),
+  deleteTodos: ids => Promise.resolve({ data: ids })
 }));
 
 describe("TodoList.vue", () => {
@@ -71,7 +72,7 @@ describe("TodoList.vue", () => {
       await wrapper.vm.addTodo();
       expect(wrapper.vm.todos[3]).toEqual(todo);
     });
-    it("deleteTodo", () => {
+    it("removeTodo", async () => {
       const wrapper = factory();
       const todos = [
         { id: 1, text: "todo1", done: true },
@@ -80,7 +81,7 @@ describe("TodoList.vue", () => {
       ];
       wrapper.setData({ todos });
 
-      wrapper.vm.deleteTodo();
+      await wrapper.vm.removeTodo();
       expect(wrapper.vm.todos.length).toBe(2);
     });
   });
