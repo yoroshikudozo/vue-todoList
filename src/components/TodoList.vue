@@ -24,7 +24,7 @@
       <p v-if="selected === 'done'">Hmm... You should start some tasks.</p>
     </div>
     <div v-if="doneTodoLength">
-      <button @click="deleteTodo">
+      <button @click="removeTodo">
         Delete done todo{{ doneTodoLength > 1 ? "s" : "" }}.
       </button>
     </div>
@@ -49,17 +49,14 @@
 </template>
 
 <script>
+import { createTodo, deleteTodos, fetchTodos } from "@/api/todoRequest";
 export default {
   name: "TodoList",
   data() {
     return {
       inputText: "",
       selected: "all",
-      todos: [
-        { id: 1, text: "Learn JavaScript", done: true },
-        { id: 2, text: "Learn Vue", done: false },
-        { id: 3, text: "Build something awesome", done: false }
-      ]
+      todos: []
     };
   },
   computed: {
@@ -95,32 +92,33 @@ export default {
       todo.done = !todo.done;
     },
     addTodo() {
-      this.todos.push({
+      const newTodo = {
         id: this.todos.length + 1,
         text: this.inputText,
         done: false
+      };
+      createTodo(newTodo).then(() => {
+        this.todos.push(newTodo);
+        this.inputText = "";
       });
-      this.inputText = "";
     },
-    deleteTodo() {
-      this.todos = this.undoneTodos;
+    removeTodo() {
+      const ids = this.doneTodos.map(todo => todo.id);
+      deleteTodos(ids).then(() => {
+        this.todos = this.undoneTodos;
+      });
     },
     visibilityFilter(value) {
       this.selected = value;
     },
-    onBeforeUnload() {
-      localStorage.setItem("todos", JSON.stringify(this.todos));
+    getTodos() {
+      fetchTodos().then(res => {
+        this.todos = res.data;
+      });
     }
   },
   created() {
-    window.addEventListener("beforeunload", this.onBeforeUnload);
-    try {
-      const data = JSON.parse(localStorage.getItem("todos"));
-      if (data) this.todos = data;
-    } catch (error) {
-      console.log("Something wrong is happened in your stored data.");
-      console.log("Use default data.");
-    }
+    this.getTodos();
   }
 };
 </script>
