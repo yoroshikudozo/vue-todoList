@@ -49,6 +49,7 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   name: "TodoList",
   data() {
@@ -104,22 +105,15 @@ export default {
     visibilityFilter(value) {
       this.selected = value;
     },
-    onBeforeUnload() {
-      localStorage.setItem("todos", JSON.stringify(this.todos));
-    },
-    getTodosFromLocalStorage() {
-      try {
-        const data = JSON.parse(localStorage.getItem("todos"));
-        if (data) this.todos = data;
-      } catch (error) {
-        console.log("Something wrong is happened in your stored data.");
-        console.log("Use default data.");
-      }
+    fetchTodos() {
+      axios.get("http://localhost:3000/todos").then(res => {
+        console.log(res);
+        this.todos = res.data;
+      });
     }
   },
   created() {
-    window.addEventListener("beforeunload", this.onBeforeUnload);
-    this.getTodosFromLocalStorage();
+    this.fetchTodos();
   }
 };
 </script>
