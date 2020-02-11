@@ -34,7 +34,8 @@ describe("TodoList.vue", () => {
           .findAll("li").length
       ).toBe(3);
     });
-    it("todoInput and works correctly", () => {
+    it("todoInput and works correctly", async () => {
+      expect.assertions(1);
       const wrapper = factory();
       const todos = [
         { id: 1, text: "todo1", done: true },
@@ -44,12 +45,18 @@ describe("TodoList.vue", () => {
       wrapper.setData({ todos });
       wrapper.find(".todoInput input").setValue("todo");
       wrapper.find(".todoInput button").trigger("click");
-      expect(wrapper.vm.todos[3]).toEqual({ id: 4, text: "todo", done: false });
+      await sleep(10).then(() => {
+        expect(wrapper.vm.todos[3]).toEqual({
+          id: 4,
+          text: "todo",
+          done: false
+        });
+      }, 100);
     });
   });
 
   describe("methods", () => {
-    it("addTodo", () => {
+    it("addTodo", async () => {
       const wrapper = factory();
       const todos = [
         { id: 1, text: "todo1", done: true },
@@ -61,7 +68,7 @@ describe("TodoList.vue", () => {
 
       const todo = { id: 4, text: "todo", done: false };
 
-      wrapper.vm.addTodo();
+      await wrapper.vm.addTodo();
       expect(wrapper.vm.todos[3]).toEqual(todo);
     });
     it("deleteTodo", () => {

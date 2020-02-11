@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { fetchTodos } from "@/api/todoRequest";
+import { createTodo, fetchTodos } from "@/api/todoRequest";
 export default {
   name: "TodoList",
   data() {
@@ -92,12 +92,15 @@ export default {
       todo.done = !todo.done;
     },
     addTodo() {
-      this.todos.push({
+      const newTodo = {
         id: this.todos.length + 1,
         text: this.inputText,
         done: false
+      };
+      createTodo(newTodo).then(() => {
+        this.todos.push(newTodo);
+        this.inputText = "";
       });
-      this.inputText = "";
     },
     deleteTodo() {
       this.todos = this.undoneTodos;
