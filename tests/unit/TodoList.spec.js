@@ -1,9 +1,23 @@
 import { shallowMount } from "@vue/test-utils";
 import TodoList from "@/components/TodoList.vue";
 
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
 function factory(options) {
   return shallowMount(TodoList, options);
 }
+
+jest.mock("@/api/todoRequest", () => ({
+  fetchTodos: () =>
+    Promise.resolve({
+      data: [
+        { id: 1, text: "todo1", done: true },
+        { id: 2, text: "todo2", done: false },
+        { id: 3, text: "todo3", done: false }
+      ]
+    }),
+  createTodo: todo => Promise.resolve({ data: todo })
+}));
 
 describe("TodoList.vue", () => {
   describe("renders", () => {

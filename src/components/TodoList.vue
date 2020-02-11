@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import { fetchTodos } from "@/api/todoRequest";
 export default {
   name: "TodoList",
   data() {
@@ -106,8 +106,7 @@ export default {
       this.selected = value;
     },
     fetchTodos() {
-      axios.get("http://localhost:3000/todos").then(res => {
-        console.log(res);
+      fetchTodos().then(res => {
         this.todos = res.data;
       });
     }
